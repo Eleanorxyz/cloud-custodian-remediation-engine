@@ -9,8 +9,8 @@ policies:
         - "tag:Owner": empty
         - "tag:Owner": absent
     actions:
-      - type: copy-tag
-        current_key: AutoTag_Creator
+      - type: rename-tag
+        old_key: AutoTag_Creator
         new_key: Owner
 
   - name: strip-tag
