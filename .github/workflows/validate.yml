@@ -1,0 +1,37 @@
+name: "Cloud Custodian Guardrails Validation"
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master","main" ]
+
+jobs:
+  validation-policies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install c7n
+        
+      - name: Validate Cloud Custodian Schema
+        run: |
+          set -e
+          if [ -n "$(ls -A policies/*.yml 2>/dev/null)" ]; then
+            for file in policies/*.yml; do
+              echo "Executing schema validation for: $file"
+              custodian validate "$file"
+            done
+          else
+            echo "Warning: No .yml policy files found in policies/ directory."
+          fi
+
