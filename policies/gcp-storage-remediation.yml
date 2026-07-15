@@ -1,0 +1,17 @@
+policies:
+  - name: gcp-remediate-public-buckets
+    resource: gcp.bucket
+    comment: |
+      "Automated guardrail: Memindai dan mencabut akses publik (allUsers/allAutenticatedUsers) pada Google Cloud Storage Bucket secara otomatis demi mematuhi standar keamanan."
+    filters:
+      - type: iam-policy
+        doc:
+          type: value
+          key: "bindings[*].members[]"
+          op: intersect
+          value:
+            - allUsers
+            - allAutheticatedUsers
+    actions:
+      - type: set-uniform-access
+        state: true
